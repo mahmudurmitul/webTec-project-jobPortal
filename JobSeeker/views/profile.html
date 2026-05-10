@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Edit Profile</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+    <h1><i class="fas fa-user-edit"></i> Edit Profile</h1>
+    <a href="../index.php" style="color:#00d4ff;">← Back to Dashboard</a>
+</div>
+
+<div class="card" style="max-width:700px;">
+    <h3>Complete Your Profile</h3>
+    <p style="color:#b0b0b0;margin-bottom:30px;">Fill all fields to increase your job matching score</p>
+    
+    <form method="POST" enctype="multipart/form-data">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:25px;">
+            
+            <!-- Basic Info -->
+            <div class="form-group">
+                <label>Headline</label>
+                <input type="text" name="headline" placeholder="e.g. PHP Developer with 3 years experience">
+            </div>
+            
+            <div class="form-group">
+                <label>Years of Experience</label>
+                <select name="yearsexperience">
+                    <option value="0">0 Years</option>
+                    <option value="1">1 Year</option>
+                    <option value="2">2 Years</option>
+                    <option value="3">3 Years</option>
+                    <option value="5">5+ Years</option>
+                    <option value="10">10+ Years</option>
+                </select>
+            </div>
+            
+            <!-- Salary -->
+            <div class="form-group">
+                <label>Current Salary (৳)</label>
+                <input type="number" name="currentsalary" placeholder="0" min="0">
+            </div>
+            
+            <div class="form-group">
+                <label>Expected Salary (৳)</label>
+                <input type="number" name="expectedsalary" placeholder="50000" min="0">
+            </div>
+            
+            <!-- Location & Education -->
+            <div class="form-group">
+                <label>Preferred Location</label>
+                <input type="text" name="preferredlocation" placeholder="Dhaka">
+            </div>
+            
+            <div class="form-group">
+                <label>Education</label>
+                <select name="educationlevel">
+                    <option value="">Select</option>
+                    <option value="HSC">HSC</option>
+                    <option value="Bachelor">Bachelor</option>
+                    <option value="Master">Masters</option>
+                </select>
+            </div>
+            
+            <!-- Skills & Files -->
+            <div class="form-group">
+                <label>Skills (comma separated)</label>
+                <input type="text" name="skills" placeholder="PHP, MySQL, HTML, CSS, JavaScript">
+            </div>
+            
+            <div class="form-group">
+                <label>Summary</label>
+                <textarea name="summary" rows="4" placeholder="Brief professional summary..."></textarea>
+            </div>
+        </div>
+        
+        <div style="margin-top:30px;text-align:center;">
+            <div style="display:flex;gap:15px;justify-content:center;flex-wrap:wrap;">
+                <div class="form-group" style="max-width:300px;">
+                    <label>Resume (PDF)</label>
+                    <input type="file" name="resume" accept=".pdf">
+                </div>
+                <div class="form-group" style="max-width:300px;">
+                    <label>Profile Picture</label>
+                    <input type="file" name="profilepic" accept="image/*">
+                </div>
+            </div>
+            
+            <button type="submit" name="update_profile" style="width:250px;font-size:18px;padding:18px;">
+                <i class="fas fa-save"></i> Save Profile
+            </button>
+        </div>
+    </form>
+</div>
+
+</div>
+<script src="script.js"></script>
+</body>
+</html>

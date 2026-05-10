@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Job Portal - Professional Dashboard</title>
+<link rel="stylesheet" href="views/style.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <h1><i class="fas fa-briefcase"></i> JobPortal Pro</h1>
+            <p>Find Your Dream Job</p>
+        </div>
+    </div>
+
+    <?php if(!isset($_SESSION['seeker_id'])): ?>
+    
+        <!-- Auth Cards -->
+        <div style="display: flex; gap: 30px; flex-wrap: wrap;">
+            <div class="card" style="flex: 1; min-width: 350px;">
+                <h3><i class="fas fa-sign-in-alt"></i> Login</h3>
+                <form method="POST">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" name="email" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" name="password" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" name="login"><i class="fas fa-arrow-right"></i> Login</button>
+                </form>
+            </div>
+            
+            <div class="card" style="flex: 1; min-width: 350px;">
+                <h3><i class="fas fa-user-plus"></i> Register</h3>
+                <form method="POST">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" name="name" placeholder="John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" name="email" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" name="phone" placeholder="+88017xxxxxxxx" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" name="password" placeholder="Min 6 chars" required>
+                    </div>
+                    <button type="submit" name="register"><i class="fas fa-user-plus"></i> Create Account</button>
+                </form>
+            </div>
+        </div>
+
+    <?php else: ?>
+
+        <!-- Welcome Dashboard -->
+        <div class="welcome">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                <div>
+                    <h2><i class="fas fa-user-circle"></i> Welcome back, <?php echo $_SESSION['seeker_name']; ?>!</h2>
+                    <p>Find your next opportunity</p>
+                </div>
+                <a href="?logout=1" class="apply-btn" style="font-size: 14px; padding: 12px 25px;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+            <div class="card" style="flex: 1; min-width: 250px;">
+                <h3><i class="fas fa-user-edit"></i> Profile</h3>
+                <p>Update your professional profile</p>
+                <a href="views/profile.html" class="apply-btn" style="font-size: 14px; display: inline-block; padding: 12px 20px;">Edit Profile</a>
+            </div>
+            <div class="card" style="flex: 1; min-width: 250px;">
+                <h3><i class="fas fa-heart"></i> Saved Jobs</h3>
+                <p>View your bookmarked jobs</p>
+                <button class="apply-btn" style="font-size: 14px;">View Saved (0)</button>
+            </div>
+        </div>
+
+        <!-- Advanced Job Search -->
+        <div class="card">
+            <h3><i class="fas fa-search"></i> Advanced Job Search</h3>
+            <div class="filters">
+                <div>
+                    <label>Category</label>
+                    <select id="category">
+                        <option value="">All Categories</option>
+                        <?php 
+                        $cats = mysqli_query($GLOBALS['conn'],"SELECT * FROM categories");
+                        while($cat = mysqli_fetch_assoc($cats)){
+                            echo "<option value='".$cat['id']."'>".$cat['name']."</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div>
+                    <label>Location</label>
+                    <input type="text" id="location" placeholder="Dhaka, Chittagong...">
+                </div>
+                <div>
+                    <label>Job Type</label>
+                    <select id="type">
+                        <option value="">All Types</option>
+                        <option value="full-time">Full Time</option>
+                        <option value="part-time">Part Time</option>
+                        <option value="remote">Remote</option>
+                        <option value="contract">Contract</option>
+                    </select>
+                </div>
+                <button onclick="filterJobs()" style="margin-left: 10px;"><i class="fas fa-search"></i> Search Jobs</button>
+                <button onclick="loadJobs()" style="background: #6b7280;"><i class="fas fa-redo"></i> Reset</button>
+            </div>
+        </div>
+
+        <!-- Jobs Results -->
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3><i class="fas fa-briefcase"></i> Job Listings <span id="job-count" style="color: #00d4ff; font-weight: 700;"></span></h3>
+                <button onclick="loadJobs()" style="background: #6b7280; padding: 10px 20px;"><i class="fas fa-refresh"></i> Refresh</button>
+            </div>
+            <div class="jobs-table">
+                <div id="jobs">Loading jobs...</div>
+            </div>
+        </div>
+
+    <?php endif; ?>
+
+    <?php if(isset($errors)): ?>
+        <?php foreach($errors as $error): ?>
+        <div class="error">
+            <i class="fas fa-exclamation-triangle"></i> <?php echo $error; ?>
+        </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+
+</div>
+
+<script src="views/script.js"></script>
+</body>
+</html>
