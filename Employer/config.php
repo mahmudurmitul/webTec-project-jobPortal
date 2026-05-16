@@ -1,6 +1,7 @@
 <?php
 session_start();
-$conn = mysqli_connect("localhost", "root", "", "jobportal_db");
+$conn = mysqli_connect("localhost","root","");
+mysqli_select_db($conn,"jobportal_db");
 if(!$conn){
     die("Connection Failed:".mysqli_connect_error());
 }
@@ -10,7 +11,7 @@ function employerOnly(){
         exit();
     }
 }
-function employerOnlyFromViews(){
+function employerOnlyFrom(){
      if (!isset($_SESSION['userid']) || $_SESSION['role'] !== 'employer') {
         header("Location: ../login.php");
         exit();
