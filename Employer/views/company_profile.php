@@ -5,96 +5,105 @@ require_once "../controller.php";
 
 employerOnlyFrom();
 
-$userid = $_SESSION['userid'];
+$userid  = $_SESSION['userid'];
 $message = "";
+$msgtype = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (saveEmployerProfile($conn, $userid)) {
-        $message = "Company profile saved successfully.";
+        $message = "Profile updated successfully!";
+        $msgtype = "success";
     } else {
-        $message = "Failed to save company profile.";
+        $message = "Failed to update profile. Please check your input.";
+        $msgtype = "error";
     }
 }
 
 $profile = getEmployerProfile($conn, $userid);
-?>
 
+$activePage = 'edit_profile';
+$basePath   = '..';
+?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Company Profile</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Edit My Profile</title>
 </head>
 <body>
+<div class="app-layout">
+    <?php include "sidebar.php"; ?>
 
-<div class="container">
-
-    <div class="header">
-        <h1>Company Profile</h1>
-        <div class="nav">
-            <a href="../index.php">Dashboard</a>
-            <a href="create_job.php">Create Job</a>
-            <a href="../logout.php">Logout</a>
+    <main class="main-content">
+        <div class="page-header">
+            <h2>
+                <i class="fas fa-user-edit" style="color:var(--accent2);margin-right:8px"></i>
+                Edit My Profile
+            </h2>
+            <p>Update your employer registration information.</p>
         </div>
-    </div>
 
-    <div class="card">
-        <h2>Manage Company Profile</h2>
-
-        <?php if ($message != ""): ?>
-            <div class="success-msg"><?php echo htmlspecialchars($message); ?></div>
+        <?php if ($message): ?>
+            <div class="alert alert-<?= $msgtype ?>">
+                <i class="fas fa-<?= $msgtype === 'success' ? 'check' : 'circle-exclamation' ?>"></i>
+                <?= htmlspecialchars($message) ?>
+            </div>
         <?php endif; ?>
 
-        <form method="POST" enctype="multipart/form-data">
+        <div class="card">
+            <form method="POST">
+                <h3 style="margin-bottom:16px;">
+                    <i class="fas fa-user"></i> Employer Details
+                </h3>
 
-            <div class="form-group">
-                <label>Company Name</label>
-                <input type="text" name="companyname" required
-                       value="<?php echo htmlspecialchars($profile['companyname'] ?? ''); ?>">
-            </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Employer Name *</label>
+                        <input type="text" name="name" required
+                               value="<?= htmlspecialchars($profile['name'] ?? '') ?>">
+                    </div>
 
-            <div class="form-group">
-                <label>Industry</label>
-                <input type="text" name="industry"
-                       value="<?php echo htmlspecialchars($profile['industry'] ?? ''); ?>">
-            </div>
+                    <div class="form-group">
+                        <label>Email Address *</label>
+                        <input type="email" name="email" required
+                               value="<?= htmlspecialchars($profile['email'] ?? '') ?>">
+                    </div>
+                </div>
 
-            <div class="form-group">
-                <label>Company Size</label>
-                <select name="companysize">
-                    <option value="1-10">1-10</option>
-                    <option value="11-50">11-50</option>
-                    <option value="51-200">51-200</option>
-                    <option value="200+">200+</option>
-                </select>
-            </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="text" name="phone"
+                           value="<?= htmlspecialchars($profile['phone'] ?? '') ?>">
+                </div>
 
-            <div class="form-group">
-                <label>Description</label>
-                <textarea name="description"><?php echo htmlspecialchars($profile['description'] ?? ''); ?></textarea>
-            </div>
+                <hr style="margin:24px 0;border:0;border-top:1px solid var(--border);">
 
-            <div class="form-group">
-                <label>Website</label>
-                <input type="text" name="website"
-                       value="<?php echo htmlspecialchars($profile['website'] ?? ''); ?>">
-            </div>
+                <h3 style="margin-bottom:16px;">
+                    <i class="fas fa-lock"></i> Change Password
+                </h3>
 
-            <div class="form-group">
-                <label>Address</label>
-                <textarea name="address"><?php echo htmlspecialchars($profile['address'] ?? ''); ?></textarea>
-            </div>
+                <p class="text-muted" style="margin-bottom:12px;">
+                    Leave password fields blank if you do not want to change your password.
+                </p>
 
-            <div class="form-group">
-                <label>Company Logo</label>
-                <input type="file" name="logo" accept="image/*">
-            </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <input type="password" name="password" placeholder="Minimum 6 characters">
+                    </div>
 
-            <button type="submit">Save Profile</button>
-        </form>
-    </div>
+                    <div class="form-group">
+                        <label>Confirm New Password</label>
+                        <input type="password" name="confirm_password" placeholder="Re-enter password">
+                    </div>
+                </div>
 
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Update Profile
+                </button>
+            </form>
+        </div>
+    </main>
 </div>
-
 </body>
 </html>

@@ -1,26 +1,32 @@
 function toggleJobStatus(jobId) {
-    if (!confirm("Do you want to change this job status?")) {
-        return;
-    }
+    if (!confirm("Toggle this job's status?")) return;
 
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "api/toggle_job_status.php", true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-    xhr.onload = function () {
-        if (xhr.status === 200) {
-            const response = JSON.parse(xhr.responseText);
-
-            if (response.success) {
-                const statusElement = document.getElementById("status-" + jobId);
-                statusElement.innerText =
-                    response.newstatus.charAt(0).toUpperCase() + response.newstatus.slice(1);
-                statusElement.className = "status-" + response.newstatus;
-            } else {
-                alert(response.message);
-            }
+    fetch("api/toggle_job_status.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "jobid=" + jobId
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            const el = document.getElementById("status-" + jobId);
+            const s  = data.newstatus;
+            el.textContent = s.charAt(0).toUpperCase() + s.slice(1);
+            el.className   = "badge badge-" + s;
+        } else {
+            alert(data.message);
         }
-    };
+    });
+}
 
-    xhr.send("jobid=" + jobId);
+function updateApplicationStatus(applicationId, status) {
+    fetch("../api/update_application_status.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "applicationid=" + applicationId + "&status=" + status
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (!data.success) alert(data.message);
+    });
 }

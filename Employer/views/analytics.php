@@ -1,85 +1,100 @@
 <?php
 require_once "../config.php";
-
+require_once "../model.php";
 employerOnlyFrom();
 
 $employerid = $_SESSION['userid'];
+$data       = getAnalyticsData($conn, $employerid);
 
-$stmt = $conn->prepare("
-    SELECT 
-        COUNT(DISTINCT j.id) AS totaljobs,
-        COUNT(a.id) AS totalapplications,
-        SUM(CASE WHEN a.status = 'submitted' THEN 1 ELSE 0 END) AS submitted,
-        SUM(CASE WHEN a.status = 'reviewed' THEN 1 ELSE 0 END) AS reviewed,
-        SUM(CASE WHEN a.status = 'shortlisted' THEN 1 ELSE 0 END) AS shortlisted,
-        SUM(CASE WHEN a.status = 'interview' THEN 1 ELSE 0 END) AS interviews,
-        SUM(CASE WHEN a.status = 'rejected' THEN 1 ELSE 0 END) AS rejected
-    FROM jobs j
-    LEFT JOIN applications a ON j.id = a.jobid
-    WHERE j.employerid = ?
-");
-
-$stmt->bind_param("i", $employerid);
-$stmt->execute();
-$data = $stmt->get_result()->fetch_assoc();
+$activePage = 'analytics'; $basePath = '..';
 ?>
-
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Employer Analytics</title>
-    <link rel="stylesheet" href="style.css">
-</head>
+<html lang="en">
+<head><meta charset="UTF-8"><title>Hiring Analytics</title></head>
 <body>
-
-<div class="container">
-
-    <div class="header">
-        <h1>Hiring Analytics</h1>
-        <div class="nav">
-            <a href="../index.php">Dashboard</a>
-            <a href="../logout.php">Logout</a>
-        </div>
-    </div>
-
-    <div class="grid">
-        <div class="stat-box">
-            <h2><?php echo $data['totaljobs']; ?></h2>
-            <p>Total Jobs</p>
+<div class="app-layout">
+    <?php include "sidebar.php"; ?>
+    <main class="main-content">
+        <div class="page-header">
+            <h2><i class="fas fa-chart-bar" style="color:var(--accent2);margin-right:8px"></i>Hiring Analytics</h2>
+            <p>Track your recruitment performance across all job postings.</p>
         </div>
 
-        <div class="stat-box">
-            <h2><?php echo $data['totalapplications']; ?></h2>
-            <p>Total Applications</p>
+        <!-- Overview Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon purple"><i class="fas fa-briefcase"></i></div>
+                <div><div class="stat-num"><?= $data['totaljobs'] ?></div><div class="stat-label">Total Jobs</div></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon blue"><i class="fas fa-users"></i></div>
+                <div><div class="stat-num"><?= $data['totalapplications'] ?></div><div class="stat-label">Total Applications</div></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon yellow"><i class="fas fa-star"></i></div>
+                <div><div class="stat-num"><?= $data['shortlisted'] ?? 0 ?></div><div class="stat-label">Shortlisted</div></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green"><i class="fas fa-handshake"></i></div>
+                <div><div class="stat-num"><?= $data['interviews'] ?? 0 ?></div><div class="stat-label">Interviews</div></div>
+            </div>
         </div>
 
-        <div class="stat-box">
-            <h2><?php echo $data['submitted'] ?? 0; ?></h2>
-            <p>Submitted</p>
+        <!-- Application Funnel -->
+        <div class="card">
+            <h3><i class="fas fa-filter"></i> Application Funnel</h3>
+            <p class="text-muted" style="margin-bottom:16px">How candidates move through your hiring pipeline.</p>
+            <div class="funnel">
+                <div class="funnel-step s0">
+                    <div class="fnum"><?= $data['submitted'] ?? 0 ?></div>
+                    <div class="flabel">Submitted</div>
+                </div>
+                <div class="funnel-step s1">
+                    <div class="fnum"><?= $data['reviewed'] ?? 0 ?></div>
+                    <div class="flabel">Reviewed</div>
+                </div>
+                <div class="funnel-step s2">
+                    <div class="fnum"><?= $data['shortlisted'] ?? 0 ?></div>
+                    <div class="flabel">Shortlisted</div>
+                </div>
+                <div class="funnel-step s3">
+                    <div class="fnum"><?= $data['interviews'] ?? 0 ?></div>
+                    <div class="flabel">Interview</div>
+                </div>
+                <div class="funnel-step s4">
+                    <div class="fnum"><?= $data['rejected'] ?? 0 ?></div>
+                    <div class="flabel">Rejected</div>
+                </div>
+            </div>
         </div>
 
-        <div class="stat-box">
-            <h2><?php echo $data['reviewed'] ?? 0; ?></h2>
-            <p>Reviewed</p>
+        <!-- Conversion Rates -->
+        <?php if ($data['totalapplications'] > 0): ?>
+        <div class="card">
+            <h3><i class="fas fa-percent"></i> Conversion Rates</h3>
+            <?php
+            $total = $data['totalapplications'];
+            $rows  = [
+                ['Submitted → Reviewed',   $data['reviewed'],    $total],
+                ['Reviewed → Shortlisted', $data['shortlisted'], max(1, $data['reviewed'])],
+                ['Shortlisted → Interview',$data['interviews'],  max(1, $data['shortlisted'])],
+            ];
+            foreach ($rows as [$label, $num, $denom]):
+                $pct = $denom > 0 ? round(($num / $denom) * 100) : 0;
+            ?>
+            <div style="margin-bottom:16px">
+                <div class="flex-between" style="margin-bottom:6px">
+                    <span style="font-size:13px"><?= $label ?></span>
+                    <span style="font-size:13px;color:var(--accent2)"><?= $pct ?>%</span>
+                </div>
+                <div style="background:var(--bg3);border-radius:6px;height:8px;overflow:hidden">
+                    <div style="background:var(--accent);width:<?= $pct ?>%;height:100%;border-radius:6px;transition:width 0.5s"></div>
+                </div>
+            </div>
+            <?php endforeach; ?>
         </div>
-
-        <div class="stat-box">
-            <h2><?php echo $data['shortlisted'] ?? 0; ?></h2>
-            <p>Shortlisted</p>
-        </div>
-
-        <div class="stat-box">
-            <h2><?php echo $data['interviews'] ?? 0; ?></h2>
-            <p>Interview</p>
-        </div>
-
-        <div class="stat-box">
-            <h2><?php echo $data['rejected'] ?? 0; ?></h2>
-            <p>Rejected</p>
-        </div>
-    </div>
-
+        <?php endif; ?>
+    </main>
 </div>
-
 </body>
 </html>
