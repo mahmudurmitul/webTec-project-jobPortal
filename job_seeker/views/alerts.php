@@ -78,7 +78,7 @@ while ($c = mysqli_fetch_assoc($cats)) $cat_list[] = $c;
         <div class="alert alert-error"><i class="fas fa-exclamation-triangle"></i> <?= htmlspecialchars($e) ?></div>
         <?php endforeach; ?>
 
-        <!-- Create Alert Form -->
+        
         <div class="card">
             <h3><i class="fas fa-plus-circle" style="color:#a855f7;"></i> Create New Alert</h3>
             <p style="color:#666;font-size:13px;margin-bottom:20px;">Fill at least one field to create an alert.</p>
@@ -122,7 +122,7 @@ while ($c = mysqli_fetch_assoc($cats)) $cat_list[] = $c;
             </form>
         </div>
 
-        <!-- Existing Alerts -->
+        
         <div class="card">
             <h3><i class="fas fa-list" style="color:#a855f7;"></i> My Alerts
                 <span style="color:#a855f7;font-weight:700;">(<?= count($alerts) ?>)</span>

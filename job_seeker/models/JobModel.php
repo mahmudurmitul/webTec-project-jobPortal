@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . "/../config/database.php";
 
-// ── Base web path (must match JobController.php)
+
 define('MODEL_BASE_PATH', '/webtech/webTec-project-jobPortal/job_seeker');
 
 function insertSeeker($name, $email, $phone, $password) {
@@ -48,7 +48,7 @@ function emailExists($email) {
     return $exists;
 }
 
-// ─── PROFILE ─────────────────────────────────────────────────────────────────
+
 
 function getSeekerById($user_id) {
     $conn = $GLOBALS['conn'];
@@ -88,7 +88,6 @@ function updateProfile($user_id, $headline, $years_experience, $current_salary,
 
 function updateProfilePic($user_id, $pic_path) {
     $conn = $GLOBALS['conn'];
-    // $pic_path is already the correct web path passed from profile.php
     $stmt = mysqli_prepare($conn, "UPDATE users SET profilepic=? WHERE id=?");
     mysqli_stmt_bind_param($stmt, "si", $pic_path, $user_id);
     mysqli_stmt_execute($stmt);
@@ -97,14 +96,13 @@ function updateProfilePic($user_id, $pic_path) {
 
 function updateResume($user_id, $resume_path) {
     $conn = $GLOBALS['conn'];
-    // $resume_path is already the correct web path passed from profile.php
+    
     $stmt = mysqli_prepare($conn, "UPDATE seekerprofiles SET resumepath=? WHERE userid=?");
     mysqli_stmt_bind_param($stmt, "si", $resume_path, $user_id);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 }
 
-// ─── JOBS ─────────────────────────────────────────────────────────────────────
 
 function getJobs() {
     $conn = $GLOBALS['conn'];
@@ -207,7 +205,6 @@ function getCategories() {
     return mysqli_query($GLOBALS['conn'], "SELECT * FROM categories ORDER BY name");
 }
 
-// ─── APPLICATIONS ─────────────────────────────────────────────────────────────
 
 function hasApplied($seeker_id, $job_id) {
     $conn = $GLOBALS['conn'];
@@ -267,7 +264,7 @@ function withdrawApplication($app_id, $seeker_id) {
     return $affected > 0;
 }
 
-// ─── SAVED JOBS ───────────────────────────────────────────────────────────────
+
 
 function isJobSaved($user_id, $job_id) {
     $conn = $GLOBALS['conn'];
@@ -340,7 +337,7 @@ function getSavedJobsCount($user_id) {
     return $row['cnt'] ?? 0;
 }
 
-// ─── MESSAGES (Employer/Recruiter → Seeker) ───────────────────────────────────
+
 
 function getSeekerMessages($seeker_id) {
     $conn = $GLOBALS['conn'];
@@ -396,7 +393,7 @@ function getUnreadMessageCount($seeker_id) {
     return $cnt;
 }
 
-// ─── RECRUITER OUTREACH ───────────────────────────────────────────────────────
+
 
 function getRecruiterOutreach($seeker_id) {
     $conn = $GLOBALS['conn'];
@@ -441,7 +438,7 @@ function respondToOutreach($outreach_id, $seeker_id) {
     mysqli_stmt_close($stmt);
 }
 
-// ─── JOB ALERTS ──────────────────────────────────────────────────────────────
+
 
 function getJobAlerts($seeker_id) {
     $conn = $GLOBALS['conn'];
@@ -484,7 +481,7 @@ function deleteJobAlert($alert_id, $seeker_id) {
     return $affected > 0;
 }
 
-// ─── COMPLAINTS ───────────────────────────────────────────────────────────────
+
 
 function submitComplaint($submitter_id, $subject_id, $description) {
     $conn = $GLOBALS['conn'];

@@ -13,7 +13,7 @@ require_once __DIR__ . "/controllers/JobController.php";
 <body>
 
 <?php if (!isset($_SESSION['seeker_id'])): ?>
-<!-- ══════════ AUTH PAGE (no sidebar) ══════════ -->
+
 <div class="auth-wrapper">
     <div class="auth-header">
         <h1><i class="fas fa-briefcase"></i> JobPortal Pro</h1>
@@ -102,18 +102,17 @@ require_once __DIR__ . "/controllers/JobController.php";
 </div>
 
 <?php else: ?>
-<!-- ══════════ LOGGED IN — SIDEBAR LAYOUT ══════════ -->
+
 
 <div class="app-layout">
 
-    <!-- ── SIDEBAR ── -->
+    
     <aside class="sidebar">
         <div class="sidebar-logo">
             <i class="fas fa-briefcase"></i>
             <span>JobPortal Pro</span>
         </div>
 
-        <!-- Avatar + name -->
         <div class="sidebar-user">
             <?php if (!empty($user_profile['profilepic'])): ?>
                 <img src="<?= htmlspecialchars($user_profile['profilepic']) ?>" class="sidebar-avatar" alt="Profile">
@@ -126,7 +125,6 @@ require_once __DIR__ . "/controllers/JobController.php";
             </div>
         </div>
 
-        <!-- Nav links -->
         <nav class="sidebar-nav">
             <a href="/webtech/webTec-project-jobPortal/job_seeker/index.php" class="active"><i class="fas fa-briefcase"></i> Job Listings</a>
             <a href="/webtech/webTec-project-jobPortal/job_seeker/views/profile.php"><i class="fas fa-user-edit"></i> Edit Profile</a>
@@ -152,7 +150,6 @@ require_once __DIR__ . "/controllers/JobController.php";
         </div>
     </aside>
 
-    <!-- ── MAIN CONTENT ── -->
     <main class="main-content">
 
         <?php if (isset($_GET['msg'])): ?>
@@ -176,13 +173,11 @@ require_once __DIR__ . "/controllers/JobController.php";
         </div>
         <?php endforeach; ?>
 
-        <!-- Page heading -->
         <div class="page-heading">
             <h2><i class="fas fa-briefcase"></i> Job Listings</h2>
             <p>Browse and apply to active positions</p>
         </div>
 
-        <!-- Filters -->
         <div class="card">
             <h3><i class="fas fa-search" style="color:#a855f7;"></i> Search &amp; Filter Jobs</h3>
             <div class="filters">
@@ -239,7 +234,6 @@ require_once __DIR__ . "/controllers/JobController.php";
             </div>
         </div>
 
-        <!-- Job listings (AJAX) -->
         <div class="card">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
                 <h3><i class="fas fa-list" style="color:#a855f7;"></i>

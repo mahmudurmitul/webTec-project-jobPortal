@@ -2,7 +2,7 @@
 session_start();
 require_once __DIR__ . "/../models/JobModel.php";
 
-// ── Base path constant (change this once if your folder name changes)
+
 define('BASE_PATH', '/webtech/webTec-project-jobPortal/job_seeker');
 
 $errors = [];
@@ -112,7 +112,7 @@ if (isset($_GET['action'])) {
     }
 }
 
-// ─── LOGOUT ───────────────────────────────────────────────────────────────────
+
 
 if (isset($_GET['logout'])) {
     session_destroy();
@@ -120,7 +120,7 @@ if (isset($_GET['logout'])) {
     exit();
 }
 
-// ─── REGISTER ─────────────────────────────────────────────────────────────────
+
 
 if (isset($_POST['register'])) {
     $name             = trim($_POST['name']            ?? '');
@@ -148,7 +148,7 @@ if (isset($_POST['register'])) {
     }
 }
 
-// ─── LOGIN ────────────────────────────────────────────────────────────────────
+
 
 if (isset($_POST['login'])) {
     $email    = trim($_POST['email']    ?? '');
@@ -171,7 +171,7 @@ if (isset($_POST['login'])) {
     }
 }
 
-// ─── APPLY TO JOB ─────────────────────────────────────────────────────────────
+
 
 if (isset($_POST['apply_job']) && isset($_SESSION['seeker_id'])) {
     $job_id       = intval($_POST['job_id'] ?? 0);
@@ -215,7 +215,7 @@ if (isset($_POST['apply_job']) && isset($_SESSION['seeker_id'])) {
     }
 }
 
-// ─── CREATE JOB ALERT ─────────────────────────────────────────────────────────
+
 
 if (isset($_POST['create_alert']) && isset($_SESSION['seeker_id'])) {
     $keyword     = trim($_POST['alert_keyword']  ?? '');
@@ -236,7 +236,6 @@ if (isset($_POST['create_alert']) && isset($_SESSION['seeker_id'])) {
     $errors = array_merge($errors, $alert_errors);
 }
 
-// ─── SUBMIT COMPLAINT ─────────────────────────────────────────────────────────
 
 if (isset($_POST['submit_complaint']) && isset($_SESSION['seeker_id'])) {
     $subject_id  = intval($_POST['subject_id']   ?? 0);
@@ -254,7 +253,6 @@ if (isset($_POST['submit_complaint']) && isset($_SESSION['seeker_id'])) {
     $errors = array_merge($errors, $comp_errors);
 }
 
-// ─── LOAD COMMON DATA ─────────────────────────────────────────────────────────
 
 $user_profile = null;
 $saved_count  = 0;

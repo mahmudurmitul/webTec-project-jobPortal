@@ -92,7 +92,7 @@ function validateComplaint() {
 }
 
 
-// ── Detect base path automatically so AJAX works from any page depth
+
 var BASE = '/webtech/webTec-project-jobPortal/job_seeker';
 
 

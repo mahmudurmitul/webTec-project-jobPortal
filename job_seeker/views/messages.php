@@ -66,7 +66,7 @@ $outreach  = getRecruiterOutreach($_SESSION['seeker_id']);
             <p>Inbox from employers and recruiter outreach</p>
         </div>
 
-        <!-- ── Employer/Recruiter Messages ── -->
+        
         <div class="card">
             <h3 style="margin-bottom:6px;">
                 <i class="fas fa-building" style="color:#a855f7;"></i> Employer Messages

@@ -116,7 +116,7 @@ function skillTags($str) {
                 </div>
             </div>
 
-            <!-- Meta pills -->
+            
             <div class="job-detail-meta">
                 <div class="meta-pill"><i class="fas fa-map-marker-alt"></i> <?= htmlspecialchars($job['location']) ?></div>
                 <div class="meta-pill"><i class="fas fa-clock"></i>
@@ -138,7 +138,7 @@ function skillTags($str) {
                 <div class="meta-pill"><i class="fas fa-tag"></i> <?= htmlspecialchars($job['catname']) ?></div>
             </div>
 
-            <!-- Description -->
+            
             <div class="job-desc">
                 <?php if (!empty($job['description'])): ?>
                 <p class="section-label">Job Description</p>
@@ -170,7 +170,7 @@ function skillTags($str) {
             </div>
         </div>
 
-        <!-- APPLY FORM -->
+        
         <div class="card" style="max-width:700px;">
             <?php if ($already_applied): ?>
             <div class="alert alert-success" style="margin:0;">

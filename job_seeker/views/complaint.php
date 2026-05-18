@@ -8,7 +8,7 @@ if (!isset($_SESSION['seeker_id'])) {
 
 $complaints = getSeekerComplaints($_SESSION['seeker_id']);
 
-// Get jobs for complaint subject dropdown
+
 $jobs_result = getJobs();
 $jobs_list = [];
 while ($j = mysqli_fetch_assoc($jobs_result)) $jobs_list[] = $j;
@@ -80,7 +80,7 @@ while ($j = mysqli_fetch_assoc($jobs_result)) $jobs_list[] = $j;
         <div class="alert alert-error"><i class="fas fa-exclamation-triangle"></i> <?= htmlspecialchars($e) ?></div>
         <?php endforeach; ?>
 
-        <!-- Submit Complaint Form -->
+        
         <div class="card" style="max-width:700px;">
             <h3><i class="fas fa-exclamation-circle" style="color:#a855f7;"></i> Submit a Complaint</h3>
             <p style="color:#666;font-size:13px;margin-bottom:20px;">Select the job you want to report and describe the issue.</p>

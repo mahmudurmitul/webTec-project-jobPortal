@@ -39,7 +39,6 @@ if (isset($_POST['update_profile'])) {
             $web_path  = BASE_PATH . "/uploads/" . $filename;
             if (move_uploaded_file($_FILES['profilepic']['tmp_name'], $disk_path)) {
                 updateProfilePic($_SESSION['seeker_id'], $web_path);
-                // Update session-level cache immediately
                 $_SESSION['seeker_profilepic'] = $web_path;
             } else {
                 $profile_errors[] = "Failed to upload profile picture.";
@@ -47,7 +46,7 @@ if (isset($_POST['update_profile'])) {
         }
     }
 
-    // Resume upload
+    
     if (empty($profile_errors) && isset($_FILES['resume']) && $_FILES['resume']['error'] == 0) {
         $ext = strtolower(pathinfo($_FILES['resume']['name'], PATHINFO_EXTENSION));
         if ($ext !== 'pdf') {
@@ -77,7 +76,7 @@ if (isset($_POST['update_profile'])) {
         header("Location: /webtech/webTec-project-jobPortal/job_seeker/index.php?msg=profile_updated");
         exit();
     }
-    // Reload profile data to show current values after error
+
     $user_profile = getSeekerById($_SESSION['seeker_id']);
 }
 ?>
