@@ -354,6 +354,7 @@ function getSeekerMessages($seeker_id) {
          FROM messages m
          JOIN users u ON u.id = m.senderid
          WHERE m.recipientid = ?
+           AND u.role IN ('employer', 'recruiter')
          ORDER BY m.sentat DESC");
     mysqli_stmt_bind_param($stmt, "i", $seeker_id);
     mysqli_stmt_execute($stmt);
@@ -378,7 +379,12 @@ function markMessageRead($message_id, $seeker_id) {
 function getUnreadMessageCount($seeker_id) {
     $conn = $GLOBALS['conn'];
     $stmt = mysqli_prepare($conn,
-        "SELECT COUNT(*) as cnt FROM messages WHERE recipientid=? AND isread=0");
+        "SELECT COUNT(*) as cnt 
+         FROM messages m
+         JOIN users u ON u.id = m.senderid
+         WHERE m.recipientid=? 
+           AND m.isread=0
+           AND u.role IN ('employer', 'recruiter')");
     mysqli_stmt_bind_param($stmt, "i", $seeker_id);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
