@@ -1,8 +1,3 @@
--- ============================================
--- COMPLETE SCHEMA - ALL 4 ROLES (Shared DB)
--- ============================================
-
--- 1. USERS (সবার জন্য - CORE TABLE)
 CREATE TABLE users (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
@@ -16,7 +11,6 @@ CREATE TABLE users (
     createdat DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2. SEEKERPROFILES (Role 1: Job Seeker)
 CREATE TABLE seekerprofiles (
     id INT PRIMARY KEY AUTO_INCREMENT,
     userid INT NOT NULL,
@@ -32,7 +26,7 @@ CREATE TABLE seekerprofiles (
     FOREIGN KEY (userid) REFERENCES users(id)
 );
 
--- 3. EMPLOYERPROFILES (Role 2: Employer)
+
 CREATE TABLE employerprofiles (
     id INT PRIMARY KEY AUTO_INCREMENT,
     userid INT NOT NULL,
@@ -46,7 +40,7 @@ CREATE TABLE employerprofiles (
     FOREIGN KEY (userid) REFERENCES users(id)
 );
 
--- 4. RECRUITERPROFILES (Role 3: Recruiter)
+
 CREATE TABLE recruiterprofiles (
     id INT PRIMARY KEY AUTO_INCREMENT,
     userid INT NOT NULL,
@@ -57,7 +51,7 @@ CREATE TABLE recruiterprofiles (
     FOREIGN KEY (userid) REFERENCES users(id)
 );
 
--- 5. RECRUITERCLIENTS (Role 3: Recruiter এর clients)
+
 CREATE TABLE recruiterclients (
     id INT PRIMARY KEY AUTO_INCREMENT,
     recruiterid INT NOT NULL,
@@ -68,14 +62,12 @@ CREATE TABLE recruiterclients (
     FOREIGN KEY (employerid) REFERENCES users(id)
 );
 
--- 6. CATEGORIES (সবার জন্য - Job categories)
+
 CREATE TABLE categories (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
     description TEXT
 );
-
--- 7. JOBS (Role 2+3: Employer/Recruiter post)
 CREATE TABLE jobs (
     id INT PRIMARY KEY AUTO_INCREMENT,
     employerid INT NOT NULL,
@@ -99,7 +91,7 @@ CREATE TABLE jobs (
     FOREIGN KEY (categoryid) REFERENCES categories(id)
 );
 
--- 8. APPLICATIONS (Role 1+3: Seeker/Recruiter apply)
+
 CREATE TABLE applications (
     id INT PRIMARY KEY AUTO_INCREMENT,
     jobid INT NOT NULL,
@@ -114,7 +106,7 @@ CREATE TABLE applications (
     FOREIGN KEY (recruiterid) REFERENCES users(id)
 );
 
--- 9. SAVEDJOBS (Role 1: Seeker bookmarks)
+
 CREATE TABLE savedjobs (
     id INT PRIMARY KEY AUTO_INCREMENT,
     userid INT NOT NULL,
@@ -124,7 +116,7 @@ CREATE TABLE savedjobs (
     FOREIGN KEY (jobid) REFERENCES jobs(id)
 );
 
--- 10. JOBALERTS (Role 1: Seeker alerts)
+
 CREATE TABLE jobalerts (
     id INT PRIMARY KEY AUTO_INCREMENT,
     seekerid INT NOT NULL,
@@ -137,7 +129,7 @@ CREATE TABLE jobalerts (
     FOREIGN KEY (categoryid) REFERENCES categories(id)
 );
 
--- 11. RECRUITEROUTREACH (Role 3: Recruiter → Seeker)
+
 CREATE TABLE recruiteroutreach (
     id INT PRIMARY KEY AUTO_INCREMENT,
     recruiterid INT NOT NULL,
@@ -151,7 +143,7 @@ CREATE TABLE recruiteroutreach (
     FOREIGN KEY (jobid) REFERENCES jobs(id)
 );
 
--- 12. MESSAGES (Role 1+2: Employer ↔ Seeker)
+
 CREATE TABLE messages (
     id INT PRIMARY KEY AUTO_INCREMENT,
     senderid INT NOT NULL,
@@ -165,7 +157,7 @@ CREATE TABLE messages (
     FOREIGN KEY (applicationid) REFERENCES applications(id)
 );
 
--- 13. COMPLAINTS (সবাই → Admin)
+
 CREATE TABLE complaints (
     id INT PRIMARY KEY AUTO_INCREMENT,
     submitterid INT NOT NULL,
@@ -177,31 +169,3 @@ CREATE TABLE complaints (
     FOREIGN KEY (submitterid) REFERENCES users(id)
 );
 
--- ============================================
--- SAMPLE DATA (সবাই test করার জন্য)
--- ============================================
-
--- Categories
-INSERT INTO categories (name,description) VALUES 
-('IT','Information Technology'),
-('Marketing','Marketing Jobs'),
-('HR','Human Resources'),
-('Finance','Accounting/Finance');
-
--- Test Users
-INSERT INTO users (name,email,passwordhash,phone,role) VALUES 
-('Admin User','admin@test.com','5f4dcc3b5aa765d61d8327deb882cf99','01900000001','admin'), -- pass: password
-('Test Employer','employer@test.com','5f4dcc3b5aa765d61d8327deb882cf99','01700000001','employer'),
-('Test Recruiter','recruiter@test.com','5f4dcc3b5aa765d61d8327deb882cf99','01800000001','recruiter');
-
--- Test Seeker Profile
-INSERT INTO users (name,email,passwordhash,phone,role) VALUES 
-('Test Seeker','seeker@test.com','5f4dcc3b5aa765d61d8327deb882cf99','01600000001','seeker');
-INSERT INTO seekerprofiles (userid,headline,skills,expectedsalary) VALUES 
-(4,'PHP Developer','PHP,MySQL,JS',40000);
-
--- Test Jobs
-INSERT INTO employerprofiles (userid,companyname,industry) VALUES (2,'Tech Corp','IT');
-INSERT INTO jobs (employerid,categoryid,title,description,salarymin,salarymax,location,jobtype,experiencelevel,deadline) VALUES 
-(2,1,'PHP Developer','PHP+MySQL+AJAX',30000,50000,'Dhaka','full-time','mid','2026-06-30'),
-(2,1,'Frontend Developer','HTML CSS JS',25000,40000,'Dhaka','full-time','entry','2026-06-30');
