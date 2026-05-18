@@ -1,11 +1,13 @@
 <?php
 session_start();
-require_once "model.php";
+require_once __DIR__ . "/../model/model.php";
 
 $errors = [];
 $msg    = "";
 $page   = $_GET['page'] ?? 'dashboard';
 
+
+ensureHiredStatus();
 
 function requireLogin() {
     if (!isset($_SESSION['recruiter_id'])) {
@@ -25,7 +27,6 @@ if (isset($_GET['action'])) {
     requireLogin();
     header("Content-Type: application/json");
 
-  
     if ($_GET['action'] === 'searchSeekers') {
         $kw  = $_GET['keyword'] ?? '';
         $loc = $_GET['location'] ?? '';
@@ -35,7 +36,7 @@ if (isset($_GET['action'])) {
         exit();
     }
 
-    
+
     if ($_GET['action'] === 'toggleJobStatus') {
         $jobId  = (int)($_GET['job_id'] ?? 0);
         $status = $_GET['status'] ?? 'active';
@@ -48,10 +49,11 @@ if (isset($_GET['action'])) {
         exit();
     }
 
+    
     if ($_GET['action'] === 'updateAppStatus') {
         $appId  = (int)($_GET['app_id'] ?? 0);
         $status = $_GET['status'] ?? '';
-        $allowed = ['submitted','reviewed','shortlisted','interview','rejected'];
+        $allowed = ['submitted','reviewed','shortlisted','interview','rejected','hired'];
         if ($appId && in_array($status, $allowed)) {
             updateApplicationStatus($appId, $_SESSION['recruiter_id'], $status);
             echo json_encode(['success' => true]);
@@ -67,13 +69,25 @@ if (isset($_GET['action'])) {
         exit();
     }
 
-   
+    
     if ($_GET['action'] === 'getPipeline') {
         echo json_encode(getPipeline($_SESSION['recruiter_id']));
         exit();
     }
 
-   
+
+    if ($_GET['action'] === 'markHired') {
+        $appId = (int)($_GET['app_id'] ?? 0);
+        if ($appId) {
+            $ok = markAsHired($appId, $_SESSION['recruiter_id']);
+            echo json_encode(['success' => $ok, 'app_id' => $appId]);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Invalid app_id']);
+        }
+        exit();
+    }
+
+  
     echo json_encode(['error' => 'unknown action']);
     exit();
 }
@@ -136,13 +150,23 @@ if (isset($_POST['update_profile'])) {
     $specialization = trim($_POST['specialization'] ?? '');
     $description    = trim($_POST['description'] ?? '');
     $website        = trim($_POST['website'] ?? '');
+    $phone          = trim($_POST['phone'] ?? '');
 
     if (empty($agencyName)) $errors[] = "Agency name is required.";
 
     if (empty($errors)) {
         upsertRecruiterProfile($_SESSION['recruiter_id'], $agencyName, $specialization, $description, $website);
 
-        
+       
+        if ($phone) {
+            global $conn;
+            $stmt = mysqli_prepare($conn, "UPDATE users SET phone=? WHERE id=?");
+            mysqli_stmt_bind_param($stmt, "si", $phone, $_SESSION['recruiter_id']);
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+        }
+
+     
         if (!empty($_FILES['profilepic']['name'])) {
             $ext = strtolower(pathinfo($_FILES['profilepic']['name'], PATHINFO_EXTENSION));
             if (!in_array($ext, ['jpg','jpeg','png','gif','webp'])) {
@@ -246,7 +270,7 @@ if (isset($_POST['send_outreach'])) {
 
     if (empty($errors)) {
         sendOutreach($_SESSION['recruiter_id'], $seekerId, $jobId, $message);
-        header("Location: index.php?page=outreach&msg=Outreach+sent");
+        header("Location: index.php?page=seeker_profile&seeker_id={$seekerId}&msg=Outreach+sent+successfully");
         exit();
     }
     $page = 'seeker_profile';
@@ -275,6 +299,7 @@ if (isset($_GET['mark_read'])) {
     header("Location: index.php?page=messages");
     exit();
 }
+
 
 
 if (isset($_POST['submit_complaint'])) {

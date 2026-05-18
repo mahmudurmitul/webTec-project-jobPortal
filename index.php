@@ -1,5 +1,5 @@
 <?php
-require_once "controller.php";
+require_once __DIR__ . "/controller/controller.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">

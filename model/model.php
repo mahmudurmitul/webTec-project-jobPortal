@@ -1,5 +1,5 @@
 <?php
-require_once "config.php";
+require_once __DIR__ . "/../config/config.php";
 
 
 
@@ -38,7 +38,6 @@ function emailExists($email) {
     mysqli_stmt_close($stmt);
     return $exists;
 }
-
 
 
 function getRecruiterProfile($userId) {
@@ -148,20 +147,6 @@ function getCategories() {
     return $rows;
 }
 
-function createJob($recruiterId, $employerId, $categoryId, $title, $description, $requirements, $benefits, $salaryMin, $salaryMax, $location, $jobType, $expLevel, $deadline, $status) {
-    global $conn;
-    $stmt = mysqli_prepare($conn,
-        "INSERT INTO jobs (employerid, recruiterid, categoryid, title, description, requirements, benefits, salarymin, salarymax, location, jobtype, experiencelevel, deadline, status)
-         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-    mysqli_stmt_bind_param($stmt, "iiissssddssss s",
-        $employerId, $recruiterId, $categoryId, $title, $description, $requirements, $benefits,
-        $salaryMin, $salaryMax, $location, $jobType, $expLevel, $deadline, $status);
-    mysqli_stmt_execute($stmt);
-    $id = mysqli_insert_id($conn);
-    mysqli_stmt_close($stmt);
-    return $id;
-}
-
 function createJobFull($recruiterId, $employerId, $categoryId, $title, $description, $requirements, $benefits, $salaryMin, $salaryMax, $location, $jobType, $expLevel, $deadline, $status) {
     global $conn;
     $stmt = mysqli_prepare($conn,
@@ -247,15 +232,37 @@ function updateJobStatus($jobId, $recruiterId, $status) {
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 }
-
 function deleteJob($jobId, $recruiterId) {
     global $conn;
+
+
+    $stmt = mysqli_prepare($conn, "SELECT id FROM jobs WHERE id=? AND recruiterid=?");
+    mysqli_stmt_bind_param($stmt, "ii", $jobId, $recruiterId);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_store_result($stmt);
+    if (mysqli_stmt_num_rows($stmt) === 0) {
+        mysqli_stmt_close($stmt);
+        return; 
+    }
+    mysqli_stmt_close($stmt);
+
+
+    $stmt = mysqli_prepare($conn, "DELETE FROM recruiteroutreach WHERE jobid=?");
+    mysqli_stmt_bind_param($stmt, "i", $jobId);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+
+    $stmt = mysqli_prepare($conn, "DELETE FROM applications WHERE jobid=?");
+    mysqli_stmt_bind_param($stmt, "i", $jobId);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+
+   
     $stmt = mysqli_prepare($conn, "DELETE FROM jobs WHERE id=? AND recruiterid=?");
     mysqli_stmt_bind_param($stmt, "ii", $jobId, $recruiterId);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 }
-
 
 
 function searchSeekers($keyword = '', $location = '', $expLevel = '', $salaryMax = '') {
@@ -312,7 +319,6 @@ function getSeekerPublicProfile($seekerId) {
     mysqli_stmt_close($stmt);
     return $row;
 }
-
 
 
 function sendOutreach($recruiterId, $seekerId, $jobId, $message) {
@@ -377,13 +383,49 @@ function getApplicationsByRecruiterJobs($recruiterId, $jobFilter = '', $statusFi
     return $rows;
 }
 
+function ensureHiredStatus() {
+    global $conn;
+    
+    $result = mysqli_query($conn, "SHOW COLUMNS FROM applications LIKE 'status'");
+    $row = mysqli_fetch_assoc($result);
+    if ($row && strpos($row['Type'], 'hired') === false) {
+        mysqli_query($conn,
+            "ALTER TABLE applications MODIFY COLUMN status
+             ENUM('submitted','reviewed','shortlisted','interview','rejected','withdrawn','hired')
+             DEFAULT 'submitted'");
+    }
+}
+
 function updateApplicationStatus($appId, $recruiterId, $status) {
     global $conn;
+    $allowed = ['submitted','reviewed','shortlisted','interview','rejected','hired'];
+    if (!in_array($status, $allowed)) return;
+    if ($status === 'hired') ensureHiredStatus();
+   
     $stmt = mysqli_prepare($conn,
-        "UPDATE applications SET status=? WHERE id=? AND jobid IN (SELECT id FROM jobs WHERE recruiterid=?)");
+        "UPDATE applications a
+         JOIN jobs j ON a.jobid = j.id
+         SET a.status = ?
+         WHERE a.id = ? AND j.recruiterid = ?");
     mysqli_stmt_bind_param($stmt, "sii", $status, $appId, $recruiterId);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
+}
+
+function markAsHired($appId, $recruiterId) {
+    global $conn;
+    ensureHiredStatus();
+
+    $stmt = mysqli_prepare($conn,
+        "UPDATE applications a
+         JOIN jobs j ON a.jobid = j.id
+         SET a.status = 'hired'
+         WHERE a.id = ? AND j.recruiterid = ?");
+    mysqli_stmt_bind_param($stmt, "ii", $appId, $recruiterId);
+    $ok = mysqli_stmt_execute($stmt);
+    $affected = mysqli_stmt_affected_rows($stmt);
+    mysqli_stmt_close($stmt);
+    return $affected > 0;
 }
 
 function getApplicationById($appId) {
@@ -405,7 +447,6 @@ function getApplicationById($appId) {
 }
 
 
-
 function getPipeline($recruiterId) {
     global $conn;
     $stmt = mysqli_prepare($conn,
@@ -416,7 +457,7 @@ function getPipeline($recruiterId) {
          LEFT JOIN employerprofiles ep ON j.employerid=ep.userid
          JOIN users u ON a.seekerid=u.id
          LEFT JOIN seekerprofiles sp ON a.seekerid=sp.userid
-         WHERE j.recruiterid=? AND a.status NOT IN ('rejected','withdrawn')
+         WHERE j.recruiterid=? AND a.status NOT IN ('rejected','withdrawn','hired')
          ORDER BY a.appliedat DESC");
     mysqli_stmt_bind_param($stmt, "i", $recruiterId);
     mysqli_stmt_execute($stmt);
@@ -430,13 +471,14 @@ function getPipeline($recruiterId) {
 function getPlacementHistory($recruiterId) {
     global $conn;
     $stmt = mysqli_prepare($conn,
-        "SELECT a.*, j.title as jobtitle, ep.companyname, u.name as seekername, sp.headline
+        "SELECT a.*, j.title as jobtitle, ep.companyname, u.name as seekername,
+                u.email as seekeremail, sp.headline, sp.skills, sp.yearsexperience
          FROM applications a
          JOIN jobs j ON a.jobid=j.id
          LEFT JOIN employerprofiles ep ON j.employerid=ep.userid
          JOIN users u ON a.seekerid=u.id
          LEFT JOIN seekerprofiles sp ON a.seekerid=sp.userid
-         WHERE j.recruiterid=? AND a.status='interview'
+         WHERE j.recruiterid=? AND a.status='hired'
          ORDER BY a.appliedat DESC");
     mysqli_stmt_bind_param($stmt, "i", $recruiterId);
     mysqli_stmt_execute($stmt);
@@ -448,11 +490,12 @@ function getPlacementHistory($recruiterId) {
 }
 
 
+
 function getRecruiterAnalytics($recruiterId) {
     global $conn;
     $data = [];
 
-    
+ 
     $stmt = mysqli_prepare($conn, "SELECT COUNT(*) as total, SUM(status='read') as readcount, SUM(status='responded') as responded FROM recruiteroutreach WHERE recruiterid=?");
     mysqli_stmt_bind_param($stmt, "i", $recruiterId);
     mysqli_stmt_execute($stmt);
@@ -470,15 +513,15 @@ function getRecruiterAnalytics($recruiterId) {
     $data['apps_total'] = $r['total'];
     mysqli_stmt_close($stmt);
 
-    
-    $stmt = mysqli_prepare($conn, "SELECT COUNT(*) as total FROM applications a JOIN jobs j ON a.jobid=j.id WHERE j.recruiterid=? AND a.status='interview'");
+
+    $stmt = mysqli_prepare($conn, "SELECT COUNT(*) as total FROM applications a JOIN jobs j ON a.jobid=j.id WHERE j.recruiterid=? AND a.status='hired'");
     mysqli_stmt_bind_param($stmt, "i", $recruiterId);
     mysqli_stmt_execute($stmt);
     $r = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
     $data['placed'] = $r['total'];
     mysqli_stmt_close($stmt);
 
-  
+ 
     $stmt = mysqli_prepare($conn, "SELECT COUNT(*) as total, SUM(status='active') as active, SUM(status='closed') as closed FROM jobs WHERE recruiterid=?");
     mysqli_stmt_bind_param($stmt, "i", $recruiterId);
     mysqli_stmt_execute($stmt);
@@ -488,7 +531,7 @@ function getRecruiterAnalytics($recruiterId) {
     $data['jobs_closed'] = $r['closed'];
     mysqli_stmt_close($stmt);
 
-    
+   
     $stmt = mysqli_prepare($conn, "SELECT COUNT(*) as total FROM recruiterclients WHERE recruiterid=?");
     mysqli_stmt_bind_param($stmt, "i", $recruiterId);
     mysqli_stmt_execute($stmt);
@@ -497,6 +540,31 @@ function getRecruiterAnalytics($recruiterId) {
     mysqli_stmt_close($stmt);
 
     return $data;
+}
+
+function getPlacementPerClient($recruiterId) {
+    global $conn;
+    $stmt = mysqli_prepare($conn,
+        "SELECT
+            COALESCE(ep.companyname, rc.companynameoverride, 'Unknown') as clientname,
+            j.employerid,
+            COUNT(a.id) as total_apps,
+            SUM(a.status='hired') as placed,
+            SUM(a.status='rejected') as rejected
+         FROM jobs j
+         LEFT JOIN employerprofiles ep ON j.employerid = ep.userid
+         LEFT JOIN recruiterclients rc ON rc.employerid = j.employerid AND rc.recruiterid = j.recruiterid
+         LEFT JOIN applications a ON a.jobid = j.id
+         WHERE j.recruiterid = ?
+         GROUP BY j.employerid
+         ORDER BY placed DESC");
+    mysqli_stmt_bind_param($stmt, "i", $recruiterId);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $rows = [];
+    while ($r = mysqli_fetch_assoc($result)) $rows[] = $r;
+    mysqli_stmt_close($stmt);
+    return $rows;
 }
 
 function getClientReport($recruiterId, $clientEmployerId) {
@@ -522,6 +590,7 @@ function getClientReport($recruiterId, $clientEmployerId) {
     mysqli_stmt_close($stmt);
     return $rows;
 }
+
 
 
 function getMessages($userId) {
@@ -557,7 +626,6 @@ function markMessageRead($msgId, $userId) {
 }
 
 
-
 function submitComplaint($submitterId, $subjectId, $description) {
     global $conn;
     $stmt = mysqli_prepare($conn, "INSERT INTO complaints (submitterid, subjectid, description) VALUES (?,?,?)");
@@ -565,7 +633,6 @@ function submitComplaint($submitterId, $subjectId, $description) {
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 }
-
 
 
 function getDashboardStats($recruiterId) {
@@ -600,10 +667,9 @@ function getDashboardStats($recruiterId) {
 }
 
 
-
 function getAnnouncements() {
     global $conn;
-   
+
     mysqli_query($conn,
         "CREATE TABLE IF NOT EXISTS announcements (
             id INT PRIMARY KEY AUTO_INCREMENT,
