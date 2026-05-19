@@ -1,4 +1,6 @@
-
+// ============================================================
+// Profile picture live preview
+// ============================================================
 function previewPic(input) {
     if (input.files && input.files[0]) {
         const reader = new FileReader();
@@ -13,9 +15,16 @@ function previewPic(input) {
     }
 }
 
+// ============================================================
+//  RecruiterHub Pro — Frontend Scripts
+// ============================================================
+
+<<<<<<< HEAD
 
 
-
+=======
+// Auth tab switcher
+>>>>>>> 0e5b1b3773d675329dd7049dc83f42cfc694ce5f
 function showTab(tab) {
     document.querySelectorAll('.auth-section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
@@ -27,7 +36,13 @@ function showTab(tab) {
     });
 }
 
+<<<<<<< HEAD
 
+=======
+// ============================================================
+// AJAX: Search Seekers
+// ============================================================
+>>>>>>> 0e5b1b3773d675329dd7049dc83f42cfc694ce5f
 function searchSeekers() {
     const keyword  = document.getElementById('sk-keyword')?.value || '';
     const location = document.getElementById('sk-location')?.value || '';

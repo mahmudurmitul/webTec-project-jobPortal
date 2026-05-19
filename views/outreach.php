@@ -4,7 +4,11 @@
     <p>Send messages directly to seekers about job opportunities — they appear in the seeker's inbox</p>
 </div>
 
+<<<<<<< HEAD
 
+=======
+<!-- Stats row -->
+>>>>>>> 0e5b1b3773d675329dd7049dc83f42cfc694ce5f
 <?php
 $total     = count($outreachList);
 $read      = count(array_filter($outreachList, fn($o) => $o['status'] === 'read'));
@@ -32,7 +36,11 @@ $responded = count(array_filter($outreachList, fn($o) => $o['status'] === 'respo
     </div>
 </div>
 
+<<<<<<< HEAD
 
+=======
+<!-- Quick Compose -->
+>>>>>>> 0e5b1b3773d675329dd7049dc83f42cfc694ce5f
 <div class="card">
     <h3><i class="fas fa-pen"></i> Send New Outreach</h3>
     <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">
@@ -44,7 +52,11 @@ $responded = count(array_filter($outreachList, fn($o) => $o['status'] === 'respo
     </a>
 </div>
 
+<<<<<<< HEAD
 
+=======
+<!-- Sent Outreach List -->
+>>>>>>> 0e5b1b3773d675329dd7049dc83f42cfc694ce5f
 <div class="card">
     <h3><i class="fas fa-list"></i> Sent Messages (<?= $total ?>)</h3>
     <?php if (empty($outreachList)): ?>

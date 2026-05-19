@@ -4,7 +4,15 @@
     <p>All candidates you have successfully hired through your recruitment</p>
 </div>
 
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+<!-- How to hire info box -->
+=======
+
+>>>>>>> 43a4b345e51f77b9bede491f9ae3f1139cea9d11
+>>>>>>> 0e5b1b3773d675329dd7049dc83f42cfc694ce5f
 <div style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.25);border-left:4px solid #fbbf24;border-radius:10px;padding:14px 18px;margin-bottom:22px;display:flex;gap:12px;align-items:flex-start;">
     <i class="fas fa-info-circle" style="color:#fbbf24;margin-top:2px;font-size:16px;flex-shrink:0;"></i>
     <div style="font-size:13px;color:#e2e8f0;">
@@ -93,7 +101,15 @@
         </table>
     </div>
 
+<<<<<<< HEAD
    
+=======
+<<<<<<< HEAD
+    <!-- Summary stats -->
+=======
+   
+>>>>>>> 43a4b345e51f77b9bede491f9ae3f1139cea9d11
+>>>>>>> 0e5b1b3773d675329dd7049dc83f42cfc694ce5f
     <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);display:flex;gap:24px;flex-wrap:wrap;">
         <?php
         $companies = array_unique(array_filter(array_column($placements, 'companyname')));

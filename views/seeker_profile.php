@@ -16,7 +16,11 @@ if (!$seeker): ?>
 
 <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:24px;flex-wrap:wrap;">
 
+<<<<<<< HEAD
   
+=======
+    <!-- Profile Card -->
+>>>>>>> 0e5b1b3773d675329dd7049dc83f42cfc694ce5f
     <div>
         <div class="card">
             <div style="text-align:center;margin-bottom:20px;">
@@ -61,7 +65,11 @@ if (!$seeker): ?>
         <?php endif; ?>
     </div>
 
+<<<<<<< HEAD
 
+=======
+    <!-- Outreach Form -->
+>>>>>>> 0e5b1b3773d675329dd7049dc83f42cfc694ce5f
     <div>
         <?php if ($seeker['summary']): ?>
         <div class="card">

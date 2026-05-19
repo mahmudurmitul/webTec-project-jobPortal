@@ -22,7 +22,11 @@ $jobsList = getRecruiterJobs(
     </div>
 </div>
 
+<<<<<<< HEAD
 
+=======
+<!-- ── Filters ── -->
+>>>>>>> 0e5b1b3773d675329dd7049dc83f42cfc694ce5f
 <div class="search-bar">
     <form method="GET" style="display:contents;">
         <input type="hidden" name="page" value="jobs">
@@ -79,7 +83,11 @@ $jobsList = getRecruiterJobs(
     </form>
 </div>
 
+<<<<<<< HEAD
 
+=======
+<!-- ── Table ── -->
+>>>>>>> 0e5b1b3773d675329dd7049dc83f42cfc694ce5f
 <div class="card">
     <h3><i class="fas fa-list"></i> Jobs (<?= count($jobsList) ?>)</h3>
 

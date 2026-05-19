@@ -72,7 +72,7 @@ require_once __DIR__ . "/controller/controller.php";
         </nav>
     </aside>
 
-    
+    <!-- Main Content -->
     <main class="main-content">
 
         <?php if (!empty($_GET['msg'])): ?>
