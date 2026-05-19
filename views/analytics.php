@@ -6,15 +6,8 @@ $responseRate = $analytics['outreach_total'] > 0
     ? round(($analytics['outreach_responded'] / $analytics['outreach_total']) * 100, 1) : 0;
 $placementRate = $analytics['apps_total'] > 0
     ? round(($analytics['placed'] / $analytics['apps_total']) * 100, 1) : 0;
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 0e5b1b3773d675329dd7049dc83f42cfc694ce5f
 
->>>>>>> 43a4b345e51f77b9bede491f9ae3f1139cea9d11
 
-// Client report — use recruiter's own client list
 $selectedClient = (int)($_GET['client'] ?? 0);
 $clientReport   = [];
 if ($selectedClient) {
@@ -26,7 +19,7 @@ if ($selectedClient) {
     <p>Track your recruitment performance and generate per-client reports</p>
 </div>
 
-<!-- KPI Cards -->
+
 <div class="stats-grid">
     <div class="stat-card">
         <div class="stat-icon purple"><i class="fas fa-paper-plane"></i></div>
@@ -58,21 +51,13 @@ if ($selectedClient) {
     </div>
 </div>
 
-<<<<<<< HEAD
-<!-- Overview Bar Chart (AJAX) -->
-=======
 
-<<<<<<< HEAD
-=======
->>>>>>> 43a4b345e51f77b9bede491f9ae3f1139cea9d11
->>>>>>> 0e5b1b3773d675329dd7049dc83f42cfc694ce5f
 <div class="card">
     <h3><i class="fas fa-chart-bar"></i> Activity Overview</h3>
     <div id="analytics-loading" class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
     <div id="analytics-chart" style="display:none;"></div>
 </div>
 
-<<<<<<< HEAD
 <div class="card">
     <h3><i class="fas fa-building"></i> Placement Success Rate per Client</h3>
     <?php if (empty($placementPerClient)): ?>
@@ -117,57 +102,6 @@ if ($selectedClient) {
 
 
 <div class="card">
-=======
-<!-- Placement Success Rate per Client -->
-<div class="card">
-    <h3><i class="fas fa-building"></i> Placement Success Rate per Client</h3>
-    <?php if (empty($placementPerClient)): ?>
-    <div class="empty-state"><i class="fas fa-chart-bar"></i><p>No client data yet.</p></div>
-    <?php else: ?>
-    <div class="table-wrap">
-        <table>
-            <thead>
-                <tr>
-                    <th>Client</th>
-                    <th>Total Applications</th>
-                    <th>Placed (Interview)</th>
-                    <th>Rejected</th>
-                    <th>Success Rate</th>
-                </tr>
-            </thead>
-            <tbody>
-            <?php foreach ($placementPerClient as $c):
-                $rate = $c['total_apps'] > 0
-                    ? round(($c['placed'] / $c['total_apps']) * 100, 1) : 0;
-            ?>
-            <tr>
-                <td><strong><?= htmlspecialchars($c['clientname']) ?></strong></td>
-                <td><?= $c['total_apps'] ?></td>
-                <td style="color:var(--green);font-weight:600;"><?= $c['placed'] ?></td>
-                <td style="color:var(--red);"><?= $c['rejected'] ?></td>
-                <td>
-                    <div style="display:flex;align-items:center;gap:10px;">
-                        <div style="flex:1;background:var(--bg3);border-radius:4px;height:8px;min-width:80px;">
-                            <div style="background:var(--green);height:100%;border-radius:4px;width:<?= $rate ?>%;"></div>
-                        </div>
-                        <span style="color:var(--green);font-weight:700;font-size:13px;"><?= $rate ?>%</span>
-                    </div>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-            </tbody>
-        </table>
-    </div>
-    <?php endif; ?>
-</div>
-
-<<<<<<< HEAD
-<!-- Generate Client Report -->
-=======
-
->>>>>>> 43a4b345e51f77b9bede491f9ae3f1139cea9d11
-<div class="card">
->>>>>>> 0e5b1b3773d675329dd7049dc83f42cfc694ce5f
     <h3><i class="fas fa-file-alt"></i> Generate Client Report</h3>
     <form method="GET" style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
         <input type="hidden" name="page" value="analytics">
@@ -205,15 +139,7 @@ if ($selectedClient) {
 
     <?php if ($selectedClient && !empty($clientReport)): ?>
     <?php
-<<<<<<< HEAD
   
-=======
-<<<<<<< HEAD
-    // Find client name
-=======
-  
->>>>>>> 43a4b345e51f77b9bede491f9ae3f1139cea9d11
->>>>>>> 0e5b1b3773d675329dd7049dc83f42cfc694ce5f
     $clientName = '';
     foreach ($clients_list as $cl) {
         if ($cl['employerid'] == $selectedClient) { $clientName = $cl['companynameoverride']; break; }

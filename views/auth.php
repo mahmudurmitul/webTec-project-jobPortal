@@ -16,11 +16,7 @@
             <div class="auth-tab <?= $activeTab==='register'?'active':'' ?>" onclick="showTab('register')">Register</div>
         </div>
 
-<<<<<<< HEAD
        
-=======
-        <!-- SUCCESS: just registered -->
->>>>>>> 0e5b1b3773d675329dd7049dc83f42cfc694ce5f
         <?php if (isset($_GET['msg']) && $_GET['msg'] === 'registered'): ?>
         <div class="alert alert-success" style="margin-bottom:16px;">
             <i class="fas fa-check-circle"></i>
@@ -37,11 +33,7 @@
         </div>
         <?php endif; ?>
 
-<<<<<<< HEAD
        
-=======
-        <!-- LOGIN -->
->>>>>>> 0e5b1b3773d675329dd7049dc83f42cfc694ce5f
         <div id="tab-login" class="auth-section <?= $activeTab==='login'?'active':'' ?>">
             <form method="POST" action="index.php">
                 <div class="form-group">
@@ -62,11 +54,7 @@
             </p>
         </div>
 
-<<<<<<< HEAD
     
-=======
-        <!-- REGISTER -->
->>>>>>> 0e5b1b3773d675329dd7049dc83f42cfc694ce5f
         <div id="tab-register" class="auth-section <?= $activeTab==='register'?'active':'' ?>">
             <form method="POST" action="index.php">
                 <div class="form-row">

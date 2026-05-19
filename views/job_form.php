@@ -28,11 +28,7 @@ $linkedClients = array_filter($clients_list, fn($c) => !empty($c['employerid']))
 
         <div class="form-row">
 
-<<<<<<< HEAD
         
-=======
-            <!-- Client selection — shows CLIENT name from recruiterclients table -->
->>>>>>> 0e5b1b3773d675329dd7049dc83f42cfc694ce5f
             <?php if (!$editJob): ?>
             <div class="form-group">
                 <label>Client Company * <span style="color:var(--muted);font-size:11px;">(posting on behalf of)</span></label>

@@ -1,6 +1,4 @@
-// ============================================================
-// Profile picture live preview
-// ============================================================
+
 function previewPic(input) {
     if (input.files && input.files[0]) {
         const reader = new FileReader();
@@ -15,16 +13,8 @@ function previewPic(input) {
     }
 }
 
-// ============================================================
-//  RecruiterHub Pro — Frontend Scripts
-// ============================================================
-
-<<<<<<< HEAD
 
 
-=======
-// Auth tab switcher
->>>>>>> 0e5b1b3773d675329dd7049dc83f42cfc694ce5f
 function showTab(tab) {
     document.querySelectorAll('.auth-section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
@@ -36,13 +26,7 @@ function showTab(tab) {
     });
 }
 
-<<<<<<< HEAD
 
-=======
-// ============================================================
-// AJAX: Search Seekers
-// ============================================================
->>>>>>> 0e5b1b3773d675329dd7049dc83f42cfc694ce5f
 function searchSeekers() {
     const keyword  = document.getElementById('sk-keyword')?.value || '';
     const location = document.getElementById('sk-location')?.value || '';
@@ -119,9 +103,7 @@ function renderSeekers(seekers) {
     div.innerHTML = html;
 }
 
-// ============================================================
-// AJAX: Toggle Job Status
-// ============================================================
+
 function toggleStatus(jobId, newStatus) {
     const badge = document.getElementById('status-badge-' + jobId);
     if (badge) badge.textContent = 'Updating...';
@@ -140,9 +122,7 @@ function toggleStatus(jobId, newStatus) {
     xhttp.send();
 }
 
-// ============================================================
-// AJAX: Update Application Status
-// ============================================================
+
 function updateAppStatus(appId, status, selectEl) {
     selectEl.disabled = true;
 
@@ -163,9 +143,7 @@ function updateAppStatus(appId, status, selectEl) {
     xhttp.send();
 }
 
-// ============================================================
-// Mark candidate as Hired
-// ============================================================
+
 function markHired(appId, btnEl) {
     if (!confirm('Mark this candidate as HIRED? They will move to Placement History.')) return;
     btnEl.disabled = true;
@@ -206,9 +184,7 @@ function showToast(msg) {
     setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity 0.5s'; setTimeout(()=>t.remove(),500); }, 3500);
 }
 
-// ============================================================
-// Utility
-// ============================================================
+
 function escHtml(s) {
     if (!s) return '';
     return String(s)
