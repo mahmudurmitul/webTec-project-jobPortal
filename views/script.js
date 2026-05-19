@@ -15,6 +15,7 @@ function previewPic(input) {
 
 
 
+
 function showTab(tab) {
     document.querySelectorAll('.auth-section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
@@ -25,7 +26,6 @@ function showTab(tab) {
         }
     });
 }
-
 
 
 function searchSeekers() {
@@ -104,7 +104,9 @@ function renderSeekers(seekers) {
     div.innerHTML = html;
 }
 
-
+// ============================================================
+// AJAX: Toggle Job Status
+// ============================================================
 function toggleStatus(jobId, newStatus) {
     const badge = document.getElementById('status-badge-' + jobId);
     if (badge) badge.textContent = 'Updating...';
@@ -123,7 +125,9 @@ function toggleStatus(jobId, newStatus) {
     xhttp.send();
 }
 
-
+// ============================================================
+// AJAX: Update Application Status
+// ============================================================
 function updateAppStatus(appId, status, selectEl) {
     selectEl.disabled = true;
 
@@ -144,7 +148,52 @@ function updateAppStatus(appId, status, selectEl) {
     xhttp.send();
 }
 
+// ============================================================
+// Mark candidate as Hired
+// ============================================================
+function markHired(appId, btnEl) {
+    if (!confirm('Mark this candidate as HIRED? They will move to Placement History.')) return;
+    btnEl.disabled = true;
+    btnEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            try {
+                const res = JSON.parse(this.responseText);
+                if (res.success) {
+                    const card = btnEl.closest('tr') || btnEl.closest('.kanban-card');
+                    if (card) {
+                        card.style.opacity = '0';
+                        card.style.transition = 'opacity 0.4s';
+                        setTimeout(() => card.remove(), 400);
+                    }
+                    showToast('Candidate marked as Hired! View in Placement History.');
+                } else {
+                    btnEl.disabled = false;
+                    btnEl.innerHTML = '<i class="fas fa-check-double"></i> Hire';
+                }
+            } catch(e) {
+                btnEl.disabled = false;
+                btnEl.innerHTML = '<i class="fas fa-check-double"></i> Hire';
+            }
+        }
+    };
+    xhttp.open('GET', 'index.php?action=markHired&app_id=' + appId, true);
+    xhttp.send();
+}
+
+function showToast(msg) {
+    const t = document.createElement('div');
+    t.style.cssText = 'position:fixed;bottom:28px;right:28px;background:#10b981;color:#fff;padding:14px 22px;border-radius:10px;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,0.4);display:flex;align-items:center;gap:10px;';
+    t.innerHTML = '<i class="fas fa-check-circle"></i> ' + msg;
+    document.body.appendChild(t);
+    setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity 0.5s'; setTimeout(()=>t.remove(),500); }, 3500);
+}
+
+// ============================================================
+// Utility
+// ============================================================
 function escHtml(s) {
     if (!s) return '';
     return String(s)
