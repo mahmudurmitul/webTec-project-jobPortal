@@ -2,43 +2,61 @@
     <div class="auth-box">
         <div class="auth-header">
             <h1><i class="fas fa-headset"></i> RecruiterHub Pro</h1>
-            <p>The professional recruitment management platform</p>
+            <p>Professional recruitment management platform</p>
         </div>
+
+        <?php
+        $activeTab = 'login';
+        if (!empty($errors)) $activeTab = isset($_POST['register']) ? 'register' : 'login';
+        if (isset($_GET['msg']) && $_GET['msg'] === 'registered') $activeTab = 'login';
+        ?>
 
         <div class="auth-tabs">
-            <div class="auth-tab active" onclick="showTab('login')">Login</div>
-            <div class="auth-tab" onclick="showTab('register')">Register</div>
+            <div class="auth-tab <?= $activeTab==='login'?'active':'' ?>"    onclick="showTab('login')">Sign In</div>
+            <div class="auth-tab <?= $activeTab==='register'?'active':'' ?>" onclick="showTab('register')">Register</div>
         </div>
 
-        <!-- Login -->
-        <div id="tab-login" class="auth-section active">
-            <form method="POST">
-                <div class="auth-cols">
-                    <div>
-                        <div class="form-group">
-                            <label><i class="fas fa-envelope"></i> Email Address</label>
-                            <input type="email" name="email" placeholder="recruiter@agency.com" required>
-                        </div>
-                        <div class="form-group">
-                            <label><i class="fas fa-lock"></i> Password</label>
-                            <input type="password" name="password" placeholder="••••••••" required>
-                        </div>
-                        <button type="submit" name="login" class="btn btn-primary" style="width:100%;">
-                            <i class="fas fa-arrow-right"></i> Sign In
-                        </button>
-                    </div>
-                    <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px;background:rgba(124,58,237,0.08);border-radius:12px;border:1px solid rgba(124,58,237,0.2);">
-                        <i class="fas fa-headset" style="font-size:48px;color:#a855f7;margin-bottom:16px;opacity:0.7;"></i>
-                        <h3 style="font-family:'Syne',sans-serif;color:#e2e8f0;margin-bottom:8px;">Welcome Back</h3>
-                        <p style="color:#64748b;font-size:13px;">Manage your clients, post jobs, find top talent, and track your placements — all in one place.</p>
-                    </div>
+        <!-- SUCCESS: just registered -->
+        <?php if (isset($_GET['msg']) && $_GET['msg'] === 'registered'): ?>
+        <div class="alert alert-success" style="margin-bottom:16px;">
+            <i class="fas fa-check-circle"></i>
+            Account created successfully! Your account is <strong>pending admin verification</strong>.
+            You will be able to log in once an admin approves your account.
+        </div>
+        <?php endif; ?>
+
+        <?php if (!empty($errors)): ?>
+        <div class="alert alert-error" style="margin-bottom:16px;">
+            <?php foreach ($errors as $e): ?>
+            <div><i class="fas fa-exclamation-triangle"></i> <?= htmlspecialchars($e) ?></div>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+
+        <!-- LOGIN -->
+        <div id="tab-login" class="auth-section <?= $activeTab==='login'?'active':'' ?>">
+            <form method="POST" action="index.php">
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Email Address</label>
+                    <input type="email" name="email" placeholder="recruiter@agency.com" required autofocus>
                 </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" name="password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" name="login" class="btn btn-primary" style="width:100%;justify-content:center;">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </button>
             </form>
+            <p style="margin-top:14px;text-align:center;font-size:12px;color:var(--muted);">
+                <i class="fas fa-info-circle"></i>
+                New accounts require admin verification before login is permitted.
+            </p>
         </div>
 
-        <!-- Register -->
-        <div id="tab-register" class="auth-section">
-            <form method="POST">
+        <!-- REGISTER -->
+        <div id="tab-register" class="auth-section <?= $activeTab==='register'?'active':'' ?>">
+            <form method="POST" action="index.php">
                 <div class="form-row">
                     <div class="form-group">
                         <label>Full Name *</label>
@@ -50,14 +68,14 @@
                     </div>
                     <div class="form-group">
                         <label>Email Address *</label>
-                        <input type="email" name="email" placeholder="jane@talentbridge.com" required>
+                        <input type="email" name="email" placeholder="jane@agency.com" required>
                     </div>
                     <div class="form-group">
                         <label>Phone Number *</label>
                         <input type="tel" name="phone" placeholder="+88017xxxxxxxx" required>
                     </div>
                     <div class="form-group">
-                        <label>Password * (min 6 chars)</label>
+                        <label>Password * <span style="color:var(--muted);font-size:11px;">(min 6 characters)</span></label>
                         <input type="password" name="password" placeholder="••••••••" required>
                     </div>
                     <div class="form-group">
@@ -65,20 +83,14 @@
                         <input type="password" name="confirm" placeholder="••••••••" required>
                     </div>
                 </div>
-                <button type="submit" name="register" class="btn btn-primary" style="width:100%;">
-                    <i class="fas fa-user-plus"></i> Create Recruiter Account
+                <button type="submit" name="register" class="btn btn-primary" style="width:100%;justify-content:center;">
+                    <i class="fas fa-user-plus"></i> Create Account
                 </button>
-                <p style="color:#64748b;font-size:12px;text-align:center;margin-top:12px;">
-                    <i class="fas fa-info-circle"></i> Account requires admin verification before full access.
+                <p style="margin-top:12px;text-align:center;font-size:12px;color:var(--muted);">
+                    <i class="fas fa-shield-alt"></i>
+                    Your account will be reviewed by an admin before you can log in.
                 </p>
             </form>
         </div>
-
-        <?php if (!empty($errors)): ?>
-        <div class="alert alert-error" style="margin-top:20px;">
-            <i class="fas fa-exclamation-triangle"></i>
-            <?php foreach ($errors as $e): ?><div><?= htmlspecialchars($e) ?></div><?php endforeach; ?>
-        </div>
-        <?php endif; ?>
     </div>
 </div>

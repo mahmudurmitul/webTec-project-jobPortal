@@ -10,13 +10,13 @@ if (!$seeker): ?>
         <div>
             <h2><i class="fas fa-user"></i> Candidate Profile</h2>
         </div>
-        <a href="?page=seekers" class="btn btn-ghost"><i class="fas fa-arrow-left"></i> Back to Search</a>
+        <a href="index.php?page=seekers" class="btn btn-ghost"><i class="fas fa-arrow-left"></i> Back to Search</a>
     </div>
 </div>
 
 <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:24px;flex-wrap:wrap;">
 
-    
+    <!-- Profile Card -->
     <div>
         <div class="card">
             <div style="text-align:center;margin-bottom:20px;">
@@ -61,7 +61,7 @@ if (!$seeker): ?>
         <?php endif; ?>
     </div>
 
-    
+    <!-- Outreach Form -->
     <div>
         <?php if ($seeker['summary']): ?>
         <div class="card">
@@ -81,7 +81,7 @@ if (!$seeker): ?>
                         <?php
                         $myJobs = getRecruiterJobs($_SESSION['recruiter_id'], '', 'active');
                         foreach ($myJobs as $j): ?>
-                        <option value="<?= $j['id'] ?>"><?= htmlspecialchars($j['title']) ?> @ <?= htmlspecialchars($j['companyname'] ?? '') ?></option>
+                        <option value="<?= $j['id'] ?>"><?= htmlspecialchars($j['title']) ?> @ <?= htmlspecialchars($j['clientname'] ?? '') ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
