@@ -1,0 +1,74 @@
+<link rel="stylesheet" href="views/style.css">
+
+<div class="container">
+
+<?php if(!isset($_SESSION['rid'])): ?>
+
+<h2>Recruiter Login</h2>
+<form method="POST">
+<input type="email" name="email" placeholder="Email">
+<input type="password" name="password" placeholder="Password">
+<button name="login">Login</button>
+</form>
+
+<h2>Register</h2>
+<form method="POST">
+<input type="text" name="name" placeholder="Name">
+<input type="email" name="email">
+<input type="text" name="phone">
+<input type="password" name="password">
+<button name="register">Register</button>
+</form>
+
+<?php else: ?>
+
+<h2>Welcome <?php echo $_SESSION['rname']; ?></h2>
+<a href="?logout=1">Logout</a>
+
+<hr>
+
+<h3>Add Client</h3>
+<form method="POST">
+<input type="text" name="company" placeholder="Company Name">
+<button name="addclient">Add</button>
+</form>
+
+<h3>Your Clients</h3>
+<ul>
+<?php while($c=mysqli_fetch_assoc($clients)){ ?>
+<li><?php echo $c['companynameoverride']; ?></li>
+<?php } ?>
+</ul>
+
+<hr>
+
+<h3>Create Job</h3>
+<form method="POST">
+<input type="text" name="title" placeholder="Job Title">
+<textarea name="desc"></textarea>
+<input type="number" name="min">
+<input type="number" name="max">
+<input type="text" name="loc">
+<button name="createjob">Post Job</button>
+</form>
+
+<h3>Your Jobs</h3>
+<ul>
+<?php while($j=mysqli_fetch_assoc($jobs)){ ?>
+<li><?php echo $j['title']; ?> - <?php echo $j['location']; ?></li>
+<?php } ?>
+</ul>
+
+<hr>
+
+<h3>Search Candidates (AJAX)</h3>
+<input type="text" id="searchBox" placeholder="Search skills">
+<button onclick="search()">Search</button>
+
+<div id="results"></div>
+
+<?php endif; ?>
+
+</div>
+
+<script src="views/script.js"></script>
