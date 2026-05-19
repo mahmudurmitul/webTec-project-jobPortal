@@ -6,6 +6,10 @@ $responseRate = $analytics['outreach_total'] > 0
     ? round(($analytics['outreach_responded'] / $analytics['outreach_total']) * 100, 1) : 0;
 $placementRate = $analytics['apps_total'] > 0
     ? round(($analytics['placed'] / $analytics['apps_total']) * 100, 1) : 0;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 43a4b345e51f77b9bede491f9ae3f1139cea9d11
 
 // Client report — use recruiter's own client list
 $selectedClient = (int)($_GET['client'] ?? 0);
@@ -51,7 +55,11 @@ if ($selectedClient) {
     </div>
 </div>
 
+<<<<<<< HEAD
 <!-- Overview Bar Chart (AJAX) -->
+=======
+
+>>>>>>> 43a4b345e51f77b9bede491f9ae3f1139cea9d11
 <div class="card">
     <h3><i class="fas fa-chart-bar"></i> Activity Overview</h3>
     <div id="analytics-loading" class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
@@ -101,7 +109,11 @@ if ($selectedClient) {
     <?php endif; ?>
 </div>
 
+<<<<<<< HEAD
 <!-- Generate Client Report -->
+=======
+
+>>>>>>> 43a4b345e51f77b9bede491f9ae3f1139cea9d11
 <div class="card">
     <h3><i class="fas fa-file-alt"></i> Generate Client Report</h3>
     <form method="GET" style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
@@ -140,7 +152,11 @@ if ($selectedClient) {
 
     <?php if ($selectedClient && !empty($clientReport)): ?>
     <?php
+<<<<<<< HEAD
     // Find client name
+=======
+  
+>>>>>>> 43a4b345e51f77b9bede491f9ae3f1139cea9d11
     $clientName = '';
     foreach ($clients_list as $cl) {
         if ($cl['employerid'] == $selectedClient) { $clientName = $cl['companynameoverride']; break; }

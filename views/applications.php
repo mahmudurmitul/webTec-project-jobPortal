@@ -9,7 +9,11 @@ $myJobs   = getRecruiterJobs($_SESSION['recruiter_id']);
     <p>Review and manage all candidate applications to your clients' jobs</p>
 </div>
 
+<<<<<<< HEAD
 <!-- Filters -->
+=======
+
+>>>>>>> 43a4b345e51f77b9bede491f9ae3f1139cea9d11
 <div class="search-bar">
     <form method="GET" style="display:contents;">
         <input type="hidden" name="page" value="applications">
